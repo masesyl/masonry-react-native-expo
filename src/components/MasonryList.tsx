@@ -1,66 +1,84 @@
-import React from 'react';
-import {View, StyleSheet, Text, Dimensions, Animated} from 'react-native';
-import {Item, ItemHeight} from "../types/masonry.type";
+import React, {ReactElement, useCallback, useMemo} from 'react';
+import {View, StyleSheet, Text, Dimensions, Animated, Platform} from 'react-native';
+import {GradientPropsType, Item, ItemHeight, MasonryListProps, StopType} from "../types/masonry.type";
 import ScrollView = Animated.ScrollView;
-import {LinearGradient} from 'expo-linear-gradient';
+import GradientCard from "./GradientCard";
 
 const screenWidth = Dimensions.get('window').width;
 const columnWidth = (screenWidth - 20) / 2;
 
-
-type MasonryListProps = {
-  data: Item[];
-};
-
 let gradientIndex = 0;
 let plainIndex = 0;
 
-const MasonryList: React.FC<MasonryListProps> = ({data}) => {
-  const renderItem = (item: Item, index: number) => {
+const plainColors = ["#171717", "#c1c1c1"];
 
+const MasonryList: React.FC<MasonryListProps> = ({data}): ReactElement => {
+
+  const stopTypeData: StopType[][] = useMemo(() => [
+    [
+      { offset: '30%', stopColor: '#BF42BC', stopOpacity: '1' },
+      { offset: '100%', stopColor: '#7475C5', stopOpacity: '1' }
+    ],
+    [
+      { offset: '30%', stopColor: '#5b5b5b', stopOpacity: '1' },
+      { offset: '100%', stopColor: '#262626', stopOpacity: '1' }
+    ],
+    [
+      { offset: '30%', stopColor: '#DA8C4D', stopOpacity: '1' },
+      { offset: '100%', stopColor: '#F3DB83', stopOpacity: '1' }
+    ],
+    [
+      { offset: '30%', stopColor: '#A630BD', stopOpacity: '1' },
+      { offset: '100%', stopColor: '#3AD9BA', stopOpacity: '1' },
+    ]
+  ], []);
+
+  const gradientProps: GradientPropsType = useMemo(() => ({
+    3: { cx: "0%", cy: "100%", r: "80%" },
+    4: { cx: "80%", cy: "90%", r: "100%" },
+    default: { cx: "90%", cy: "100%", r: "100%" },
+  }), []);
+
+  const renderItem = useCallback((item: Item, index: number) => {
     const height = item.heightType === 'short' ? ItemHeight.short : ItemHeight.tall;
-
-    const linearGradientColors = [["#7475C5", "#BF42BC"], ["#262626", "#5b5b5b"], ["#F3DB83", "#DA8C4D"], ["#3AD9BA", "#7084BB", "#A630BD"]];
-
-    const plainColors = ["#171717", "#c1c1c1"];
+    const { cx, cy, r } = gradientProps[index] || gradientProps.default;
 
     if (index === 2 || index === 5) {
       let plainColor: string = "#383838";
-        if (plainIndex < plainColors.length) {
-            plainColor = plainColors[plainIndex];
-            plainIndex++;
-        }
-
-      return (
-        <View key={item.key} style={[styles.itemContainer, {height, backgroundColor: plainColor}]}>
-          <Text style={styles.itemText}>{item.content}</Text>
-        </View>
-      )
-    } else {
-      let linearGradient: string[];
-      if (gradientIndex < linearGradientColors.length) {
-        linearGradient = linearGradientColors[gradientIndex];
-        gradientIndex++;
-      } else {
-        linearGradient = [];
+      if (plainIndex < plainColors.length) {
+        plainColor = plainColors[plainIndex];
+        plainIndex++;
       }
 
       return (
-          <LinearGradient
-              key={item.key}
-              style={[styles.itemContainer, {height}]}
-              colors={linearGradient}
-              start={{x: 1, y: 0.2}}
-              end={{x: 1.3, y: 0.6}}
-          >
+          <View key={item.key} style={[styles.itemContainer, {height, backgroundColor: plainColor, padding: 15}]}>
             <Text style={styles.itemText}>{item.content}</Text>
-          </LinearGradient>
+          </View>
+      )
+    } else {
+      let radialGradient: StopType[];
+      if (gradientIndex < stopTypeData.length) {
+        radialGradient = stopTypeData[gradientIndex];
+        gradientIndex++;
+      } else {
+        radialGradient = [];
+      }
+
+      return (
+          <GradientCard
+              style={styles.itemContainer}
+              height={height}
+              text={item.content}
+              stops={radialGradient}
+              cx={cx}
+              cy={cy}
+              r={r}
+          />
       )
     }
-  }
+  }, [gradientProps, stopTypeData]);
 
-
-  const renderGroups = () => {
+  const renderGroups = useCallback(() => {
     const groups = [];
     for (let i = 0; i < data.length; i += 4) {
       const group = (
@@ -78,10 +96,9 @@ const MasonryList: React.FC<MasonryListProps> = ({data}) => {
       groups.push(group);
     }
     return groups;
-  };
+  }, [data, renderItem]);
 
   return (
-
       <View style={styles.container}>
         <ScrollView
             contentContainerStyle={styles.scrollViewContent}
@@ -98,6 +115,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: screenWidth,
+    ...Platform.select({
+      web: {
+        display: 'flex',
+      },
+    }),
   },
   scrollViewContent: {
     paddingHorizontal: 10,
@@ -116,9 +138,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: columnWidth - 16,
     margin: 8,
-    padding: 15,
     borderRadius: 10,
-    backgroundColor: "#383838"
+    backgroundColor: "#383838",
+    ...Platform.select({
+      web: {
+        backgroundColor: "#e0dcdc",
+      },
+    }),
   },
   itemText: {
     color: 'white',
