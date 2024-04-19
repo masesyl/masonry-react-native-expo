@@ -1,5 +1,13 @@
 export type Item = {
   key: string;
-  height: number;
   content: string;
+  heightType?: ItemHeightType;
+  // could be more properties...
 };
+
+export type ItemHeightType = 'short' | 'tall';
+
+export enum ItemHeight {
+  short = 170,
+  tall = 240,
+}

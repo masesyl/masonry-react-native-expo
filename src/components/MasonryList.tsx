@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, StyleSheet, Text, Dimensions, Animated} from 'react-native';
-import {Item} from "../types/masonry.type";
+import {Item, ItemHeight} from "../types/masonry.type";
 import ScrollView = Animated.ScrollView;
+import {LinearGradient} from 'expo-linear-gradient';
 
 const screenWidth = Dimensions.get('window').width;
 const columnWidth = (screenWidth - 20) / 2;
@@ -11,12 +12,53 @@ type MasonryListProps = {
   data: Item[];
 };
 
-const MasonryList: React.FC<MasonryListProps> = ({ data }) => {
-  const renderItem = (item: Item, height: number) => (
-      <View key={item.key} style={[styles.itemContainer, {height}]}>
-        <Text style={styles.itemText}>{item.content}</Text>
-      </View>
-  );
+let gradientIndex = 0;
+let plainIndex = 0;
+
+const MasonryList: React.FC<MasonryListProps> = ({data}) => {
+  const renderItem = (item: Item, index: number) => {
+
+    const height = item.heightType === 'short' ? ItemHeight.short : ItemHeight.tall;
+
+    const linearGradientColors = [["#7475C5", "#BF42BC"], ["#262626", "#5b5b5b"], ["#F3DB83", "#DA8C4D"], ["#3AD9BA", "#7084BB", "#A630BD"]];
+
+    const plainColors = ["#171717", "#c1c1c1"];
+
+    if (index === 2 || index === 5) {
+      let plainColor: string = "#383838";
+        if (plainIndex < plainColors.length) {
+            plainColor = plainColors[plainIndex];
+            plainIndex++;
+        }
+
+      return (
+        <View key={item.key} style={[styles.itemContainer, {height, backgroundColor: plainColor}]}>
+          <Text style={styles.itemText}>{item.content}</Text>
+        </View>
+      )
+    } else {
+      let linearGradient: string[];
+      if (gradientIndex < linearGradientColors.length) {
+        linearGradient = linearGradientColors[gradientIndex];
+        gradientIndex++;
+      } else {
+        linearGradient = [];
+      }
+
+      return (
+          <LinearGradient
+              key={item.key}
+              style={[styles.itemContainer, {height}]}
+              colors={linearGradient}
+              start={{x: 1, y: 0.2}}
+              end={{x: 1.3, y: 0.6}}
+          >
+            <Text style={styles.itemText}>{item.content}</Text>
+          </LinearGradient>
+      )
+    }
+  }
+
 
   const renderGroups = () => {
     const groups = [];
@@ -24,12 +66,12 @@ const MasonryList: React.FC<MasonryListProps> = ({ data }) => {
       const group = (
           <View key={`group-${i}`} style={styles.group}>
             <View style={styles.column}>
-              {data[i] && renderItem(data[i], 240)}
-              {data[i + 2] && renderItem(data[i + 2], 180)}
+              {data[i] && renderItem(data[i], i)}
+              {data[i + 2] && renderItem(data[i + 2], i + 2)}
             </View>
             <View style={styles.column}>
-              {data[i + 1] && renderItem(data[i + 1], 180)}
-              {data[i + 3] && renderItem(data[i + 3], 240)}
+              {data[i + 1] && renderItem(data[i + 1], i + 1)}
+              {data[i + 3] && renderItem(data[i + 3], i + 3)}
             </View>
           </View>
       );
@@ -40,11 +82,15 @@ const MasonryList: React.FC<MasonryListProps> = ({ data }) => {
 
   return (
 
-        <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false} horizontal={false}>
-            {renderGroups()}
-          </ScrollView>
-        </View>
+      <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={styles.scrollViewContent}
+            showsVerticalScrollIndicator={false}
+            horizontal={false}
+        >
+          {renderGroups()}
+        </ScrollView>
+      </View>
   );
 };
 
@@ -68,16 +114,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
     flexWrap: 'wrap',
-    width: columnWidth - 12,
-    margin: 6,
+    width: columnWidth - 16,
+    margin: 8,
     padding: 15,
-    backgroundColor: 'lightblue',
     borderRadius: 10,
+    backgroundColor: "#383838"
   },
   itemText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
   },
 });
 
