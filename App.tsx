@@ -1,5 +1,6 @@
 import {StatusBar} from 'expo-status-bar';
-import {Animated, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import {Item} from "./src/types/masonry.type";
 import MasonryList from "./src/components/MasonryList";
 

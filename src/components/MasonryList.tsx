@@ -1,5 +1,5 @@
 import React, {ReactElement, useCallback, useMemo} from 'react';
-import {View, StyleSheet, Text, Dimensions, Animated, Platform} from 'react-native';
+import {View, StyleSheet, Text, Dimensions, Animated, Platform, TouchableOpacity} from 'react-native';
 import {GradientPropsType, Item, ItemHeight, MasonryListProps, StopType} from "../types/masonry.type";
 import ScrollView = Animated.ScrollView;
 import GradientCard from "./GradientCard";
@@ -51,9 +51,11 @@ const MasonryList: React.FC<MasonryListProps> = ({data}): ReactElement => {
       }
 
       return (
-          <View key={item.key} style={[styles.itemContainer, {height, backgroundColor: plainColor, padding: 15}]}>
-            <Text style={styles.itemText}>{item.content}</Text>
-          </View>
+          <TouchableOpacity onPress={() => console.log("pressed")}>
+            <View key={item.key} style={[styles.itemContainer, {height, backgroundColor: plainColor, padding: 15}]}>
+              <Text style={styles.itemText}>{item.content}</Text>
+            </View>
+          </TouchableOpacity>
       )
     } else {
       let radialGradient: StopType[];
@@ -65,16 +67,18 @@ const MasonryList: React.FC<MasonryListProps> = ({data}): ReactElement => {
       }
 
       return (
-          <GradientCard
-              key={item.key}
-              style={styles.itemContainer}
-              height={height}
-              text={item.content}
-              stops={radialGradient}
-              cx={cx}
-              cy={cy}
-              r={r}
-          />
+          <TouchableOpacity>
+            <GradientCard
+                key={item.key}
+                style={styles.itemContainer}
+                height={height}
+                text={item.content}
+                stops={radialGradient}
+                cx={cx}
+                cy={cy}
+                r={r}
+            />
+          </TouchableOpacity>
       )
     }
   }, [gradientProps, stopTypeData]);
