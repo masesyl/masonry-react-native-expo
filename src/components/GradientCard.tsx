@@ -17,7 +17,7 @@ const GRADIENT_ID = "grad";
 
 const GradientCard: React.FC<GradientCardProps> = ({ height, style, cx, cy, r, stops, text }): ReactElement => {
   return (
-      <View style={style}>
+      <View style={[style, {position: 'relative'}]}>
         <Svg height={`${height}`} width={"100%"} style={styles.card}>
           <Defs>
             <RadialGradient id={GRADIENT_ID} cx={cx} cy={cy} r={r}>
@@ -31,10 +31,10 @@ const GradientCard: React.FC<GradientCardProps> = ({ height, style, cx, cy, r, s
               height={`${height}`}
               fill={`url(#${GRADIENT_ID})`}
           />
-          <View style={[styles.itemTextContainer, { height }]}>
-            <Text style={styles.itemText}>{text}</Text>
-          </View>
         </Svg>
+        <View style={[styles.itemTextContainer, { height }]}>
+          <Text style={styles.itemText}>{text}</Text>
+        </View>
       </View>
   );
 }
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   itemTextContainer: {
     justifyContent: 'flex-end',
     padding: 15,
+    position: 'absolute',
   },
   itemText: {
     color: 'white',

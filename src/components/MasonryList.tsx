@@ -66,6 +66,7 @@ const MasonryList: React.FC<MasonryListProps> = ({data}): ReactElement => {
 
       return (
           <GradientCard
+              key={item.key}
               style={styles.itemContainer}
               height={height}
               text={item.content}
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#383838",
     ...Platform.select({
       web: {
-        backgroundColor: "#e0dcdc",
+        backgroundColor: "#383838",
       },
     }),
   },
