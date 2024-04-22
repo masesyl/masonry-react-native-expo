@@ -17,14 +17,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.modules.pedometer.example"
+      "bundleIdentifier": "expo.pedometer"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "expo.modules.pedometer.example"
+      "package": "expo.pedometer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
