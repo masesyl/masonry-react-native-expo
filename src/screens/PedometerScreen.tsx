@@ -1,6 +1,6 @@
 import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from "react";
-import { checkPermissionStatus, addStepChangedListener, requestPermissions, startSendingData, stopSendingData} from "expo-pedometer";
+import {addStepChangedListener, checkPermissionStatus} from "expo-pedometer";
 
 export default function PedometerScreen() {
   const [permissionStatus, setPermissionStatus] = useState<string>("");

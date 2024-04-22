@@ -3510,7 +3510,7 @@ expo-modules-core@1.11.13:
   dependencies:
     invariant "^2.2.4"
 
-"expo-pedometer@file:expo-pedometer":
+expo-pedometer@./expo-pedometer:
   version "0.1.0"
 
 expo-status-bar@~1.11.1:
