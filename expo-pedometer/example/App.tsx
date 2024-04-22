@@ -1,15 +1,54 @@
-import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {requestPermissions, addStepChangedListener, startSendingData, stopSendingData} from "expo-pedometer";
+import {LogBox, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  requestPermissions,
+  addStepChangedListener,
+  startSendingData,
+  stopSendingData,
+  checkPermissions
+} from "expo-pedometer";
 import {useEffect, useState} from "react";
 
+LogBox.ignoreAllLogs(true);
+
 export default function App() {
+  const [permissionStatus, setPermissionStatus] = useState<String>("");
   const [isPermissionGranted, setIsPermissionGranted] = useState<boolean>(false);
   const [steps, setSteps] = useState<number>(0);
   const [isTracking, setIsTracking] = useState<boolean>(false);
 
+  useEffect(() => {
+    const status = checkPermissions()
+    switch (status) {
+      case "granted":
+        setIsPermissionGranted(true)
+        break;
+      case "denied":
+        setIsPermissionGranted(false)
+        break;
+      case "blocked":
+        setIsPermissionGranted(false)
+        break;
+      default:
+        setIsPermissionGranted(false)
+        break;
+    }
+    setPermissionStatus(status)
+  }, []);
+
+  useEffect(() => {
+    const subscription = addStepChangedListener(({steps}) => {
+      console.log("Steps: ", steps)
+      if (steps === undefined) {
+        steps = 0;
+      }
+      setSteps(steps);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   const requestPermissionRN = () => {
     requestPermissions();
-    setIsPermissionGranted(true);
   }
 
   const startTracking = () => {
@@ -47,22 +86,15 @@ export default function App() {
     }
   }
 
-  useEffect(() => {
-    const sub = addStepChangedListener(({steps}) => {
-      console.log("Steps: ", steps)
-      setSteps(steps);
-    });
-
-    return () => sub.remove();
-  }, []);
+  const buttonBackgroundColor = isTracking ? "#f86f6f" : "#007AFF";
 
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContent}>
-          {isPermissionGranted ? (
+          {(permissionStatus === "granted" && isPermissionGranted) ? (
               <>
-                <Text style={styles.stepsTitle}>Steps Taken</Text>
                 <Text style={styles.stepsFont}>{steps}</Text>
+                <Text style={styles.stepsTitle}>Steps</Text>
               </>
           ) : (
               <Text style={styles.requestFont}>
@@ -71,7 +103,7 @@ export default function App() {
           )}
         </View>
         <TouchableOpacity
-            style={styles.ctaButton}
+            style={[styles.ctaButton, {backgroundColor: buttonBackgroundColor}]}
             onPress={buttonAction}
         >
           <Text style={styles.ctaButtonText}>
@@ -108,8 +140,7 @@ const styles = StyleSheet.create({
   },
   ctaButton: {
     height: 60,
-    borderRadius: 8,
-    backgroundColor: "purple",
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 25,
