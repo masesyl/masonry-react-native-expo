@@ -1,34 +1,23 @@
-import {StatusBar} from 'expo-status-bar';
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import {Item} from "./src/types/masonry.type";
-import MasonryList from "./src/components/MasonryList";
+import {LogBox} from 'react-native';
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {NavigationContainer} from "@react-navigation/native";
+import MasonryScreen from "./src/screens/MasonryScreen";
+import PedometerScreen from "./src/screens/PedometerScreen";
+import TestScreen from "./src/screens/TestScreen";
 
-const data: Item[] = [
-  {key: '1', content: 'Add new Lighthouses', heightType: 'tall'},
-  {key: '2', content: 'Verify Lighthouses', heightType: 'short'},
-  {key: '3', content: 'Configure Domain grid', heightType: 'short'},
-  {key: '4', content: 'Create Navmesh', heightType: 'tall'},
-  {key: '5', content: 'Add new Lighthouses', heightType: 'tall'},
-  {key: '6', content: 'Verify Lighthouses', heightType: 'short'},
-  {key: '7', content: 'Item 7', heightType: 'short'},
-  {key: '8', content: 'Item 8', heightType: 'tall'},
-];
+LogBox.ignoreAllLogs(true);
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="light"/>
-        <MasonryList data={data}/>
-      </SafeAreaView>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={"MasonryScreen"}>
+          <Stack.Screen name={"MasonryScreen"} component={MasonryScreen} options={{headerShown: false}} />
+          <Stack.Screen name={"TestScreen"} component={TestScreen} options={{headerShown: false}} />
+          <Stack.Screen name={"PedometerScreen"} component={PedometerScreen} options={{headerShown: false}} />
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1f1f1f',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

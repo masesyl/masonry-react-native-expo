@@ -2,7 +2,11 @@
   "expo": {
     "name": "masonry-react-native-expo",
     "slug": "masonry-react-native-expo",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +20,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.masonry-react-native-expo"
     },
     "android": {
       "adaptiveIcon": {

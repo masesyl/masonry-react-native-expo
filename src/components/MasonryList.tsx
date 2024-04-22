@@ -3,6 +3,7 @@ import {View, StyleSheet, Text, Dimensions, Animated, Platform, TouchableOpacity
 import {GradientPropsType, Item, ItemHeight, MasonryListProps, StopType} from "../types/masonry.type";
 import ScrollView = Animated.ScrollView;
 import GradientCard from "./GradientCard";
+import {useNavigation} from "@react-navigation/native";
 
 const screenWidth = Dimensions.get('window').width;
 const columnWidth = (screenWidth - 20) / 2;
@@ -13,7 +14,7 @@ let plainIndex = 0;
 const plainColors = ["#171717", "#c1c1c1"];
 
 const MasonryList: React.FC<MasonryListProps> = ({data}): ReactElement => {
-
+  const navigation = useNavigation();
   const stopTypeData: StopType[][] = useMemo(() => [
     [
       { offset: '30%', stopColor: '#BF42BC', stopOpacity: '1' },
@@ -67,7 +68,7 @@ const MasonryList: React.FC<MasonryListProps> = ({data}): ReactElement => {
       }
 
       return (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("PedometerScreen")}>
             <GradientCard
                 key={item.key}
                 style={styles.itemContainer}

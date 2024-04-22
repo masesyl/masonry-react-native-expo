@@ -7,7 +7,7 @@ export type StepChangeEvent = {
   steps: number;
 };
 
-export function checkPermissions(): String {
+export function checkPermissionStatus() {
   return ExpoPedometerModule.checkPermissionStatus();
 }
 

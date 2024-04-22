@@ -4,7 +4,7 @@ import {
   addStepChangedListener,
   startSendingData,
   stopSendingData,
-  checkPermissions
+  checkPermissionStatus,
 } from "expo-pedometer";
 import {useEffect, useState} from "react";
 
@@ -17,7 +17,7 @@ export default function App() {
   const [isTracking, setIsTracking] = useState<boolean>(false);
 
   useEffect(() => {
-    const status = checkPermissions()
+    const status = checkPermissionStatus()
     switch (status) {
       case "granted":
         setIsPermissionGranted(true)
