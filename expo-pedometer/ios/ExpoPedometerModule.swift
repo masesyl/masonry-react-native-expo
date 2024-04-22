@@ -12,6 +12,24 @@ public class ExpoPedometerModule: Module {
 
     Events(kOnStepCounted)
 
+    Function("checkPermissionStatus") { () -> String in
+      let status = CMPedometer.authorizationStatus()
+      switch status {
+      case .authorized:
+        self.sendEvent(self.kOnStepCounted, ["status": "granted"])
+        return "granted"
+      case .denied, .restricted:
+        self.sendEvent(self.kOnStepCounted, ["status": "denied"])
+        return "denied"
+      case .notDetermined:
+        self.sendEvent(self.kOnStepCounted, ["status": "undetermined"])
+        return "undetermined"
+      @unknown default:
+        self.sendEvent(self.kOnStepCounted, ["status": "unknown"])
+        return "unknown"
+      }
+    }
+
     Function("requestPermissions") {
         pedometer = CMPedometer()
         pedometer?.stopEventUpdates()

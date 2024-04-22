@@ -7,12 +7,16 @@ export type StepChangeEvent = {
   steps: number;
 };
 
+export function checkPermissions(): String {
+  return ExpoPedometerModule.checkPermissionStatus();
+}
+
 export function requestPermissions() {
   return ExpoPedometerModule.requestPermissions();
 }
 
 export function startSendingData() {
-  ExpoPedometerModule.startSendingData();
+  return ExpoPedometerModule.startSendingData();
 }
 
 export function stopSendingData() {

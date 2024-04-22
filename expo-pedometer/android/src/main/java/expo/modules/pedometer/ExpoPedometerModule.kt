@@ -41,6 +41,23 @@ class ExpoPedometerModule : Module() {
 
     Events(kEventName)
 
+    Function("checkPermissionStatus") {
+      val activity = appContext.activityProvider?.currentActivity
+      val applicationContext = activity?.applicationContext
+      if (applicationContext != null) {
+        val permissionCheck = ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACTIVITY_RECOGNITION
+        )
+        val status = when (permissionCheck) {
+          PackageManager.PERMISSION_GRANTED -> "granted"
+          PackageManager.PERMISSION_DENIED -> "denied"
+          else -> "undetermined"
+        }
+        it.resolve(status)
+      }
+    }
+
     Function("requestPermissions") {
       val activity = appContext.activityProvider?.currentActivity
       val applicationContext = activity?.applicationContext
